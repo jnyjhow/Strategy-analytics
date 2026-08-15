@@ -10,7 +10,7 @@
               size="50px"
               class="overlapping"
             >
-              <img :src="getAvatarUrl(n.avatar)" />
+              <img :src="`${n.avatar}`" />
             </q-avatar>
           </div>
           <q-toggle
@@ -52,7 +52,6 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import getAvatarUrl from "src/utils/getAvatarUrl";
 import financialData from "src/composables/system/fake/fincancial_fake_data.json";
 import AportesTable from "../Table/AportesTable.vue";
 import LegendChart from "src/system/components/charts/LegendChart.vue";
@@ -231,10 +230,9 @@ const chartOptions = computed(() => {
         )[dataPointIndex];
 
         const userData = monthlyAportesGrouped.value[monthYearKey][user];
-        const avatarRaw = userData
+        const avatar = userData
           ? userData.avatar
           : "https://sources.strategyanalytics.com.br/storage/users/joao_default.png"; // Fallback avatar
-        const avatar = getAvatarUrl(avatarRaw);
         const value = userData ? userData.total : 0;
         const date = userData ? userData.latestDate : "N/A";
 

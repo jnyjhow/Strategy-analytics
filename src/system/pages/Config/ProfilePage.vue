@@ -40,16 +40,24 @@
 import { defineComponent, ref } from "vue";
 import TitlePage from "src/system/components/TitlePage.vue";
 import PersonalSettingLayout from "src/system/layouts/config/PersonalSettingLayout.vue";
+import ClientProfilesAndTrustedContactsLayout from "src/system/layouts/config/ClientProfilesAndTrustedContactsLayout.vue";
 import DocumentationSettingLayout from "src/system/layouts/config/DocumentationSettingLayout.vue";
 import AccountBankSettingLayout from "src/system/layouts/config/AccountBankSettingLayout.vue";
+import ClientTimelineLayout from "src/system/layouts/config/ClientTimelineLayout.vue";
+import ClientAccountSecurityLayout from "src/system/layouts/config/ClientAccountSecurityLayout.vue";
+import ClientMediaSharingLayout from "src/system/layouts/config/ClientMediaSharingLayout.vue";
 import RegisterAssetsLayout from "src/system/layouts/config/RegisterAssetsLayout.vue";
 import TermsContractLayouts from "src/system/layouts/config/TermsContractLayouts.vue";
 import { IconArrowLeft } from "@tabler/icons-vue";
 
 const componentsMap = {
   PersonalSettingLayout,
+  ClientProfilesAndTrustedContactsLayout,
   DocumentationSettingLayout,
   AccountBankSettingLayout,
+  ClientTimelineLayout,
+  ClientAccountSecurityLayout,
+  ClientMediaSharingLayout,
   RegisterAssetsLayout,
   TermsContractLayouts,
 };
@@ -66,6 +74,11 @@ const options = [
     component: "PersonalSettingLayout",
   },
   {
+    label: "Perfis e Contatos",
+    value: "profiles",
+    component: "ClientProfilesAndTrustedContactsLayout",
+  },
+  {
     label: "Documentação",
     value: "documentation",
     component: "DocumentationSettingLayout",
@@ -74,6 +87,21 @@ const options = [
     label: "Contas Bancárias",
     value: "bank",
     component: "AccountBankSettingLayout",
+  },
+  {
+    label: "Timeline",
+    value: "timeline",
+    component: "ClientTimelineLayout",
+  },
+  {
+    label: "Conta e segurança",
+    value: "security",
+    component: "ClientAccountSecurityLayout",
+  },
+  {
+    label: "Mídia e compartilhamento",
+    value: "sharing",
+    component: "ClientMediaSharingLayout",
   },
   {
     label: "Registro de Patrimônios",

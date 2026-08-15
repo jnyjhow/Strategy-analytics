@@ -22,7 +22,6 @@
       <div class="col-12">
         <p class="text-weight-bold">Localização</p>
       </div>
-      <!-- <user-location/> -->
       <div
         class="col-3 text-align q-mt-md"
         v-for="(item, index) in localization"
@@ -52,87 +51,43 @@ import { useUserStore } from "src/stores/user";
 import { storeToRefs } from "pinia";
 import useCase from "src/composables/system/useCase";
 import useAccount from "src/composables/system/Requests/useAccount";
-import UserLocation from "./UserLocation.vue";
 import { date } from "quasar";
 export default defineComponent({
   name: "PersonalSetting",
-  components:{
-    UserLocation
-  },
   setup() {
     const sameInput = ref();
     const store = useUserStore();
     const { data, isDirty, isDirtyData } = storeToRefs(store);
     const { updateData, loading } = useAccount();
     const { same } = useCase();
-    // Normalizar a fonte de dados: backend pode retornar o usuário dentro de `cliente` ou diretamente
-    const userObj = computed(() => {
-      const dv = data.value;
-      if (!dv) return {};
-      if (typeof dv === "string") {
-        try {
-          return JSON.parse(dv);
-        } catch (e) {
-          return {};
-        }
-      }
-      if (dv.cliente) return dv.cliente;
-      return dv;
+    const birthday = computed(() => {
+      return data.value.account.birthday ?? new Date(now());
     });
-
-    // formatar data de nascimento a partir dos campos possíveis (birth, birthday)
-    let brDate = "";
-    const rawBirth = computed(
-      () =>
-        userObj.value?.birth ??
-        userObj.value?.birthday ??
-        userObj.value?.account?.birthday ??
-        null,
-    );
-    if (rawBirth.value) {
-      try {
-        const dateCurrent = new Date(rawBirth.value + " 00:00:00");
-        brDate = date.formatDate(dateCurrent, "DD/MM/YYYY");
-      } catch (err) {
-        brDate = "";
-      }
-    }
+    let dateCurrent = new Date(birthday + " 00:00:00");
+    let brDate = date.formatDate(dateCurrent, "DD/MM/YYYY");
 
     const dadosBasicos = computed(() => {
       return [
-        {
-          title: "Nome Completo",
-          value: userObj.value?.name ?? userObj.value?.nome ?? "",
-        },
-        {
-          title: "Gênero",
-          value: userObj.value?.gender ?? userObj.value?.sexo ?? "Masculino",
-        },
+        { title: "Nome Completo", value: data.value.name },
+        { title: "Gênero", value: data.value.gender ?? "Masculino" },
         {
           title: "Estado Civil",
-          value:
-            userObj.value?.maritalStatus ??
-            userObj.value?.estado_civil ??
-            "Solteiro",
+          value: data.value.maritalStatus ?? "Solteiro",
         },
         {
           title: "Nacionalidade",
-          value:
-            userObj.value?.nationality ??
-            userObj.value?.cliente?.nacionalidade ??
-            "Brasileira",
+          value: data.value.nationality ?? "Brasileira",
         },
         {
           title: "Naturalidade (Cidade, UF)",
-          value: userObj.value?.cliente?.naturalidade ?? "",
+          value: data.value.naturalidade ?? "São Paulo, SP",
         },
-        { title: "Data de Nascimento", value: brDate },
         {
-          title: "CPF",
-          value:
-            userObj.value?.cpf ?? userObj.value?.person ?? "000.000.000-00",
+          title: "Data de Nascimento",
+          value: brDate,
         },
-        { title: "RG", value: userObj.value?.rg ?? "" },
+        { title: "CPF", value: data.value.account.person ?? "000.000.000-00" },
+        { title: "RG", value: data.value.account.rg ?? "00.000.000-00" },
       ];
     });
     // const dadosBasicos = [
@@ -151,31 +106,14 @@ export default defineComponent({
     //   { title: "CPF", value: data.value.account.person ?? "000.000.000-00" },
     //   { title: "RG", value: data.value.account.rg ?? "00.000.000-00" },
     // ];
-    const getLocation = () =>{
 
-    }
     const localization = [
       {
         title: "Localização Atual",
-        value:
-          userObj.value?.cliente?.language ??
-          userObj.value?.language ??
-          "Jacareí, SP",
+        value: data.value.account.language ?? "Jacareí, SP",
       },
-      {
-        title: "Cep",
-        value:
-          userObj.value?.account?.address_zip_code ??
-          userObj.value?.address_zip_code ??
-          "",
-      },
-      {
-        title: "Logradouro",
-        value:
-          userObj.value?.account?.address_city ??
-          userObj.value?.address_city ??
-          "",
-      },
+      { title: "Cep", value: data.value.account.address_zip_code ?? "" },
+      { title: "Logradouro", value: data.value.account.address_city ?? "" },
     ];
 
     const job = [

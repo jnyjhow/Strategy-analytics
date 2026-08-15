@@ -100,8 +100,8 @@ export default defineComponent({
     const tab = ref("personal");
     const onSubmitData = async () => {
       if (
-        same(isDirty.value.name, data.value?.name ?? '') &&
-        same(isDirtyData.value.phone, data.value?.account?.phone ?? '')
+        same(isDirty.value.name, data.value.name) &&
+        same(isDirtyData.value.phone, data.value.account.phone)
       ) {
         sameInput.value = "Não houver alteração, verifique!!";
         return;

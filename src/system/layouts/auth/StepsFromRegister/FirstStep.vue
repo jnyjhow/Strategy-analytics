@@ -35,9 +35,6 @@
               placeholder="000.000.000-00"
               :rules="personRule"
               ref="personRef"
-              @blur="onPersonBlur"
-              :error="!!personError"
-              :error-message="personError"
               :loading="loading"
               :disable="loading"
             />
@@ -324,7 +321,7 @@ export default defineComponent({
         await validateCPF(
           register.value.person,
           register.value.email,
-          register.value.birthday,
+          register.value.birthday
         );
       } catch (e) {
         console.log(e);
@@ -334,70 +331,16 @@ export default defineComponent({
       }
     };
 
-    const personError = ref("");
-
-    const onPersonBlur = async () => {
-      try {
-        // dispara validação local do campo para exibir mensagens das rules
-        if (personRef && personRef.value && personRef.value.validate) {
-          personRef.value.validate();
-        }
-
-        // limpar erro anterior
-        personError.value = "";
-
-        // somente tentar validação mais completa quando houver algo preenchido
-        if (!register.value.person) {
-          return;
-        }
-
-        // Validação local do CPF (format + dígitos verificadores)
-        const cleaned = ("" + register.value.person).replace(/\D/g, "");
-        let valid = true;
-
-        if (!cleaned || cleaned.length !== 11) valid = false;
-        if (/^(\d)\1{10}$/.test(cleaned)) valid = false;
-
-        if (valid) {
-          const digits = cleaned.split("").map((d) => parseInt(d, 10));
-          const calcVerifier = (sliceLen) => {
-            let sum = 0;
-            let weight = sliceLen + 1;
-            for (let i = 0; i < sliceLen; i++) {
-              sum += digits[i] * weight;
-              weight--;
-            }
-            const r = sum % 11;
-            return r < 2 ? 0 : 11 - r;
-          };
-          const v1 = calcVerifier(9);
-          const v2 = calcVerifier(10);
-          if (v1 !== digits[9] || v2 !== digits[10]) valid = false;
-        }
-
-        if (!valid) {
-          personError.value = "CPF não é válido";
-        } else {
-          personError.value = "";
-        }
-      } catch (e) {
-        console.error("Erro ao validar CPF onBlur", e);
-        personError.value = "Erro ao validar CPF";
-      }
-    };
-
     return {
       register,
       loading,
       isPwd,
       personRule,
-      personError,
       nameRef,
       lastnameRef,
       emailRef,
       birthdayRef,
       personRef,
-      onPersonBlur,
       phoneRef,
       telephoneRef,
       optionGenre,

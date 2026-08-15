@@ -1,4 +1,5 @@
 import { route } from "quasar/wrappers";
+import { Cookies } from "quasar";
 import {
   createRouter,
   createMemoryHistory,
@@ -7,7 +8,7 @@ import {
 } from "vue-router";
 import routes from "./routes";
 import useAuth from "src/composables/system/useAuth";
-import useClientAuth from "src/composables/system/useClientAuth";
+import useCookies from "src/composables/useCookies";
 
 /*
  * If not building with SSR mode, you can
@@ -33,11 +34,9 @@ export default route(function (/* { store, ssrContext } */) {
     routes,
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
-  Router.beforeEach((to, from, next) => {
-    const { isAuthenticated } = useClientAuth();
-    const isAuth = isAuthenticated();
-    console.log('Router Debug:', { to: to.name, isAuthenticated: isAuth, requiresAuth: to.meta?.auth });
-
+  Router.beforeEach(async (to) => {
+    const { verifyLogged } = useAuth();
+    const { tokenName } = useCookies()
     let home =
       to.name == "home"
         ? "Gestão de Investimentos e Serviços Financeiros"
@@ -46,26 +45,17 @@ export default route(function (/* { store, ssrContext } */) {
       to.name != undefined
         ? `Strategy Analytics -  ${home}`
         : "Strategy Analytics";
-
     if (to.meta?.auth) {
-      if (!isAuth) {
-        console.log('Redirecionando para login - sem autenticação');
-        next({ name: 'login' })
-        return
-      }
-      // Removido verifyLogged() - não precisa validar token no servidor
+      const authenticated = await verifyLogged();
+      if (!authenticated) return { name: 'login' };
     }
 
     //verificando se o usuário esta logado evitar logar duplicado
     if (to.name == "login") {
-      if (isAuth) {
-        console.log('Usuário já logado, redirecionando para config');
-        next({ name: 'config' })
-        return
-      }
+      if (Cookies.has(tokenName)) return { name: 'config' };
     }
+    return true;
+  });
 
-    console.log('Navegação permitida para:', to.name);
-    next()
-  }); return Router;
+  return Router;
 });

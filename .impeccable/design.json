@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-15T00:00:00-03:00",
+  "title": "Design System: Strategy Analytics Portal",
+  "extensions": {
+    "colorMeta": {
+      "signal-blue": {
+        "role": "primary",
+        "displayName": "Azul de Sinal",
+        "canonical": "#00a3ff",
+        "tonalRamp": ["#00304d", "#004a73", "#006799", "#0085c7", "#00a3ff", "#4dbeff", "#99daff", "#e5f6ff"]
+      },
+      "portal-white": {
+        "role": "neutral",
+        "displayName": "Branco do Portal",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#262626", "#4d4d4d", "#737373", "#999999", "#bfbfbf", "#d9d9d9", "#f2f2f2", "#ffffff"]
+      },
+      "muted-silver": {
+        "role": "neutral",
+        "displayName": "Prata Suave",
+        "canonical": "#dcdcdc",
+        "tonalRamp": ["#242424", "#464646", "#686868", "#8a8a8a", "#ababab", "#c7c7c7", "#dcdcdc", "#f5f5f5"]
+      },
+      "field-white": {
+        "role": "neutral",
+        "displayName": "Papel de Edição",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#262626", "#4d4d4d", "#737373", "#999999", "#bfbfbf", "#d9d9d9", "#f2f2f2", "#ffffff"]
+      }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Título de Página", "purpose": "Título principal do fluxo autenticado." },
+      "title": { "displayName": "Título de Seção", "purpose": "Identifica cartões e blocos editáveis." },
+      "body": { "displayName": "Corpo", "purpose": "Valores, navegação e ações." },
+      "label": { "displayName": "Rótulo", "purpose": "Rótulos externos e metadados." }
+    },
+    "shadows": [
+      { "name": "card-ambient", "value": "4px 4px 12px rgba(0, 0, 0, 0.24)", "purpose": "Profundidade discreta para cartões de vidro." }
+    ],
+    "motion": [
+      { "name": "background-standard", "value": "1.8s cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Transição de ambiente e tema já usada pelo portal." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "600px" },
+      { "name": "md", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Profile Glass Card",
+      "kind": "card",
+      "refersTo": "profile-card",
+      "description": "Superfície canônica de uma seção do perfil em leitura ou edição.",
+      "html": "<section class=\"ds-profile-card\"><header><strong>Dados Básicos</strong><button>Editar</button></header><div class=\"ds-profile-value\"><span>Nome Completo</span><b>João Silva Martins</b></div></section>",
+      "css": ".ds-profile-card{color:#fff;padding:24px;border-radius:8px;border:1px solid rgba(239,239,239,.08);background:linear-gradient(203deg,rgba(0,0,0,.24) .52%,rgba(0,0,0,.08) 51.12%,rgba(0,0,0,.04) 99.48%);backdrop-filter:blur(32px);box-shadow:4px 4px 12px rgba(0,0,0,.24);font:14px Roboto,Arial,sans-serif}.ds-profile-card header{display:flex;align-items:center;gap:10px;margin-bottom:24px}.ds-profile-card header strong{font-size:16px}.ds-profile-card button{border:0;background:transparent;color:#fff;cursor:pointer}.ds-profile-card button:hover,.ds-profile-card button:focus-visible{color:#00a3ff;outline:none}.ds-profile-value{display:grid;gap:4px}.ds-profile-value span{color:#dcdcdc}.ds-profile-value b{font-weight:700}"
+    },
+    {
+      "name": "Edit Field",
+      "kind": "input",
+      "refersTo": "edit-field",
+      "description": "Campo branco de alto contraste usado somente quando a seção entra em edição.",
+      "html": "<label class=\"ds-edit-label\">Nome Completo<input class=\"ds-edit-field\" value=\"João Silva Martins\"></label>",
+      "css": ".ds-edit-label{display:grid;gap:6px;color:#fff;font:14px Roboto,Arial,sans-serif}.ds-edit-field{height:40px;padding:0 12px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#1d1d1d;font:14px Roboto,Arial,sans-serif}.ds-edit-field:hover{border-color:#9ad8ff}.ds-edit-field:focus-visible{border-color:#00a3ff;box-shadow:0 0 0 2px rgba(0,163,255,.25);outline:none}"
+    },
+    {
+      "name": "Section Actions",
+      "kind": "button",
+      "refersTo": "action-link",
+      "description": "Salvar e Descartar permanecem junto ao título da seção editada.",
+      "html": "<div class=\"ds-section-actions\"><button class=\"ds-save\">✓ Salvar</button><button class=\"ds-discard\">Descartar</button></div>",
+      "css": ".ds-section-actions{display:flex;align-items:center;gap:8px;font:14px Roboto,Arial,sans-serif}.ds-section-actions button{padding:4px 8px;border:0;border-radius:4px;background:transparent;cursor:pointer}.ds-save{color:#00a3ff}.ds-discard{color:#a8a8a8}.ds-section-actions button:hover{background:rgba(255,255,255,.06)}.ds-section-actions button:focus-visible{outline:2px solid #00a3ff;outline-offset:2px}"
+    },
+    {
+      "name": "Profile Tabs",
+      "kind": "nav",
+      "description": "Navegação horizontal das cinco áreas principais do perfil.",
+      "html": "<nav class=\"ds-profile-tabs\"><button class=\"is-active\">Dados Pessoais</button><button>Documentação</button><button>Contas Bancárias</button></nav>",
+      "css": ".ds-profile-tabs{display:flex;gap:24px;overflow-x:auto;padding:16px 24px;border-radius:8px;background:linear-gradient(203deg,rgba(0,0,0,.24),rgba(0,0,0,.04));font:14px Roboto,Arial,sans-serif}.ds-profile-tabs button{flex:none;padding:8px 0;border:0;border-bottom:2px solid transparent;background:transparent;color:#989898;cursor:pointer}.ds-profile-tabs button:hover,.ds-profile-tabs button:focus-visible{color:#fff;outline:none}.ds-profile-tabs .is-active{color:#fff;border-bottom-color:#fff}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Sala de Controle Patrimonial",
+    "overview": "O portal deve parecer uma sala de controle financeira privada: sofisticada, sóbria e precisa. O gradiente azul–vermelho é uma assinatura permanente da área autenticada, enquanto superfícies escuras e translúcidas organizam informações sem esconder essa atmosfera. A leitura é prioritária e compacta. A edição mantém a navegação, o cartão, o título e a posição da seção, substituindo apenas os valores por campos brancos de texto escuro.",
+    "keyCharacteristics": [
+      "Gradiente azul–vermelho sempre visível como ambiente da área autenticada.",
+      "Cartões de vidro escuro com borda e sombra discretas.",
+      "Hierarquia tipográfica curta, clara e orientada a dados.",
+      "Edição local, explícita e independente por seção.",
+      "Campos brancos com texto preto somente durante a edição.",
+      "Uma coluna confortável em telas pequenas, mesmo com maior rolagem vertical."
+    ],
+    "rules": [
+      { "name": "Permanent Gradient", "body": "O gradiente azul–vermelho permanece presente em todas as telas autenticadas; cartões não podem cobri-lo com superfícies opacas extensas.", "section": "colors" },
+      { "name": "White Field", "body": "Branco sólido é linguagem de campo editável, não de cartão, painel ou fundo de página.", "section": "colors" },
+      { "name": "Stable Section", "body": "Entrar em edição não altera a posição, a largura externa, o título nem a identidade do cartão; somente seu conteúdo interno troca valores por controles.", "section": "layout" },
+      { "name": "Ambient Depth", "body": "Profundidade deve organizar camadas silenciosamente; não usar sombras grandes, claras ou decorativas em formulários comuns.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do manter o gradiente azul–vermelho visível atrás das superfícies autenticadas.",
+      "Do preservar exatamente a estrutura externa do cartão entre leitura e edição.",
+      "Do editar uma seção por vez, com Salvar e Descartar próximos ao título.",
+      "Do usar campos brancos com texto preto durante a edição.",
+      "Do colapsar a grade para uma coluna legível em telas pequenas."
+    ],
+    "donts": [
+      "Don't transformar a edição em uma página ou painel visualmente separado.",
+      "Don't usar cartões brancos ou fundos opacos extensos que apaguem o gradiente.",
+      "Don't exibir todas as seções em modo de edição ao mesmo tempo por padrão.",
+      "Don't criar cards lado a lado para o fluxo de edição do perfil.",
+      "Don't permitir que novas funcionalidades alterem a hierarquia visual das cinco áreas principais."
+    ]
+  }
+}

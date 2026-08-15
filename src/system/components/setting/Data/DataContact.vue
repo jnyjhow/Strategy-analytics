@@ -12,24 +12,25 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useUserStore } from 'src/stores/user'
-import { storeToRefs } from 'pinia'
+import { defineComponent } from "vue";
+import { useUserStore } from "src/stores/user";
+import { storeToRefs } from "pinia";
+import { date } from "quasar";
 
-const store = useUserStore()
-const { data } = storeToRefs(store)
-
+const store = useUserStore();
+const { data, isDirty, isDirtyData } = storeToRefs(store);
+let dateCurrent = new Date(data.value.account.birthday + " 00:00:00");
+let brDate = date.formatDate(dateCurrent, "DD/MM/YYYY");
+defineComponent({
+  name: "DataContact",
+});
 defineProps({
-  classDiv: { type: String, default: 'col-3 text-align q-mt-md' }
-})
-
-const dataContact = computed(() => {
- const dv = data.value || {}
-  return [
-    { title: 'Nome Completo do Contato', value: dv.contato_nome ?? 'Maria Alice da Silva' },
-    { title: 'Renda Média Mensal (R$)', value: dv.contato_telefone ?? '(18) 91502-2191' }
-  ]
-})
+  classDiv: { type: String, default: "col-3 text-align q-mt-md" },
+});
+const dataContact = [
+  { title: "Nome Completo do Contato", value: "Maria Alice da Silva" },
+  { title: "Renda Média Mensal (R$)", value: "(18) 91502-2191" },
+];
 </script>
 
 <style scoped>

@@ -7,7 +7,7 @@
         <div class="q-ml-sm" v-else>
           <btn-inline
             @closed="editBasic = false"
-            @salve="saveBasic"
+            @salve="editBasic = false"
             textClosed="Descartar"
           />
         </div>
@@ -22,7 +22,7 @@
         <div class="q-ml-sm" v-else>
           <btn-inline
             @closed="editDocuments = false"
-            @salve="saveDocuments"
+            @salve="editDocuments = false"
             textClosed="Descartar"
           />
         </div>
@@ -37,7 +37,7 @@
         <div class="q-ml-sm" v-else>
           <btn-inline
             @closed="editLocation = false"
-            @salve="saveLocation"
+            @salve="editLocation = false"
             textClosed="Descartar"
           />
         </div>
@@ -53,7 +53,7 @@
         <div class="q-ml-sm" v-else>
           <btn-inline
             @closed="editJobs = false"
-            @salve="saveJobs"
+            @salve="editJobs = false"
             textClosed="Descartar"
           />
         </div>
@@ -68,7 +68,7 @@
         <div class="q-ml-sm" v-else>
           <btn-inline
             @closed="editContract = false"
-            @salve="saveContract"
+            @salve="editContract = false"
             textClosed="Descartar"
           />
         </div>
@@ -81,11 +81,6 @@
 
 <script setup>
 import { defineComponent, ref } from "vue";
-import { onMounted } from "vue";
-import { useUserStore } from "src/stores/user";
-import { storeToRefs } from "pinia";
-import useAccount from "src/composables/system/Requests/useAccount";
-import useNotify from "src/composables/useNotify";
 import DataBasic from "src/system/components/setting/Data/DataBasic.vue";
 import DataDocument from "src/system/components/setting/Data/DataDocument.vue";
 import DataLocation from "src/system/components/setting/Data/DataLocation.vue";
@@ -103,63 +98,8 @@ const editDocuments = ref(false);
 const editLocation = ref(false);
 const editJobs = ref(false);
 const editContract = ref(false);
-const store = useUserStore();
-const { data } = storeToRefs(store);
-const { updateProfile, loading } = useAccount();
-const { errorNotify } = useNotify();
-
-const saveBasic = async () => {
-  try {
-    await updateProfile(data.value);
-    editBasic.value = false;
-  } catch (e) {
-    errorNotify("Erro ao salvar Dados Básicos");
-  }
-};
-const saveDocuments = async () => {
-  try {
-    await updateProfile(data.value);
-    editDocuments.value = false;
-  } catch (e) {
-    errorNotify("Erro ao salvar Documentos");
-  }
-};
-const saveLocation = async () => {
-  try {
-    await updateProfile(data.value);
-    editLocation.value = false;
-  } catch (e) {
-    errorNotify("Erro ao salvar Localização");
-  }
-};
-const saveJobs = async () => {
-  try {
-    await updateProfile(data.value);
-    editJobs.value = false;
-  } catch (e) {
-    errorNotify("Erro ao salvar Atividade Trabalhista");
-  }
-};
-const saveContract = async () => {
-  try {
-    await updateProfile(data.value);
-    editContract.value = false;
-  } catch (e) {
-    errorNotify("Erro ao salvar Contatos de Confiança");
-  }
-};
 defineComponent({
   name: "PersonalSettingLayout",
-});
-// Logar dados do usuário ao montar a tela de configuração para facilitar debug
-onMounted(() => {
-  try {
-    // cópia limpa para evitar referências reativas/ciclos
-    const snapshot = JSON.parse(JSON.stringify(store.data || {}));
-    console.debug("[ConfigPage] user store snapshot:", snapshot);
-  } catch (e) {
-    console.debug("[ConfigPage] user store (raw):", store.data);
-  }
 });
 // Seu código aqui
 </script>

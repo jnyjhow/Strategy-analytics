@@ -11,7 +11,7 @@
     <template v-slot:body-cell-usuario="props">
       <q-td :props="props">
         <q-avatar size="24px" class="q-mr-sm">
-          <img :src="getAvatarUrl(props.row.avatar)" />
+          <img :src="`${props.row.avatar}`" />
         </q-avatar>
         {{ props.row.usuario }}
       </q-td>
@@ -20,7 +20,6 @@
 </template>
 
 <script setup>
-import getAvatarUrl from "src/utils/getAvatarUrl";
 import { defineComponent } from "vue";
 
 defineComponent({

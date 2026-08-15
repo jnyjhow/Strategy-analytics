@@ -86,7 +86,8 @@
 
 <script setup>
 import { IconArrowDown, IconArrowUp, IconTransfer } from "@tabler/icons-vue";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import CardDeposit from "src/system/layouts/deposit/CardDeposit.vue";
 import CardTransfer from "src/system/layouts/deposit/CardTransfer.vue";
 // import { useLayoutStore } from "src/stores/layout";
@@ -96,12 +97,13 @@ import { storeToRefs } from "pinia";
 const storeLayout = useStoreLayout();
 const { dashboard } = storeToRefs(storeLayout);
 const { setSystemViewValues } = useStorage();
+const route = useRoute();
+const router = useRouter();
 defineComponent({
   name: "WalletTotal",
 });
 const viewValues = async () => {
   storeLayout.setToggleViewWalletValues();
-  console.log("easss->", dashboard.value.view_wallet_value);
   await setSystemViewValues();
 };
 
@@ -113,9 +115,20 @@ const props = defineProps({
 const dialogDeposit = ref(false);
 const dialogTransfer = ref(false);
 const deposit = () => {
-  console.log("OLA");
   dialogDeposit.value = true;
 };
+
+watch(
+  () => route.query.modal,
+  async (modal) => {
+    if (modal !== "deposit") return;
+    dialogDeposit.value = true;
+    const query = { ...route.query };
+    delete query.modal;
+    await router.replace({ query });
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped lang="sass">

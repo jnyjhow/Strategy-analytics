@@ -1,87 +1,63 @@
 <template>
-  <div class="AvatarMenu row items-center">
-    <!-- Avatar que leva às configurações -->
-    <q-btn round :to="{ name: 'config' }" size="40px" unelevated>
+  <div class="AvatarMenu row items-center no-wrap">
+    <!-- <q-item clickable v-ripple :to="{ name: 'config' }"> -->
+    <q-btn round :to="{ name: 'config' }" size="16px" unelevated>
       <q-avatar class="q-my-sm avatar-custom">
-        <template v-if="avatar && avatar.length">
-          <img :src="avatar" />
-        </template>
-        <template v-else>
-          <div class="avatar-initials">{{ initials }}</div>
-        </template>
+        <img :src="avatar" />
       </q-avatar>
     </q-btn>
-
-    <!-- Botão de logout visível -->
     <q-btn
+      round
       flat
       dense
+      size="14px"
       color="white"
+      icon="fa-solid fa-right-from-bracket"
       class="q-ml-sm"
-      @click.prevent="handleLogout"
-      title="Sair do sistema"
+      :loading="loading"
+      @click.prevent="setLogout"
     >
-      <q-icon name="logout" />
-      <span class="q-ml-xs text-white">Sair</span>
+      <q-tooltip>Sair</q-tooltip>
     </q-btn>
+    <!-- </q-item> -->
+    <!-- <q-menu
+      fit
+      anchor="bottom left"
+      self="top middle"
+      transition-show="scale"
+      transition-hide="scale"
+      class="tool text-weight-bold"
+    >
+      <q-item clickable v-ripple :to="{ name: 'config' }">
+        <q-item-section class="text-white">Configurações</q-item-section>
+        <q-item-section avatar>
+          <q-icon color="white" name="fa-solid fa-gear" />
+        </q-item-section>
+      </q-item>
+      <q-item clickable @click.prevent="setLogout">
+        <q-item-section>Logout</q-item-section>
+        <q-item-section avatar>
+          <q-icon color="red" name="fa-solid fa-right-from-bracket" />
+        </q-item-section>
+      </q-item>
+    </q-menu> -->
   </div>
 </template>
 <script>
-import { defineComponent, computed } from "vue";
-import useClientAuth from "src/composables/system/useClientAuth";
-import { useUserStore } from "src/stores/user";
-import { useRouter } from "vue-router";
+import { defineComponent } from "vue";
+import useAuth from "src/composables/system/useAuth";
 
 export default defineComponent({
   name: "AvatarMenu",
   props: {
     avatar: { type: String },
   },
-  setup(props) {
-    const { logout } = useClientAuth();
-
-    const userStore = useUserStore();
-    const initials = computed(() => {
-      // if avatar provided, no initials needed
-      if (props.avatar) return "";
-      try {
-        const name =
-          userStore.data?.name || userStore.data?.cliente?.name || "";
-        if (!name) return "";
-        const parts = name.trim().split(/\s+/);
-        const first = parts[0] ? parts[0].charAt(0) : "";
-        const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : "";
-        return (first + last).toUpperCase();
-      } catch (e) {
-        return "";
-      }
-    });
-
-    const router = useRouter();
-    const handleLogout = () => {
-      // chama logout do composable de cliente e retorna à página inicial
-      console.log("AvatarMenu.handleLogout - clicado");
-      try {
-        logout();
-        console.log("AvatarMenu.handleLogout - logout() chamado");
-      } catch (e) {
-        console.error("AvatarMenu.handleLogout - Erro no logout:", e);
-        // fallback simples: redirecionar para home
-        try {
-          router.replace({ path: "/" });
-        } catch (err) {
-          try {
-            window.location.replace("/");
-          } catch (err2) {
-            window.location.href = "/";
-          }
-        }
-      }
-    };
+  setup() {
+    const { setLogout, loading } = useAuth();
 
     return {
-      handleLogout,
-      initials,
+      setLogout,
+      loading,
     };
   },
 });
@@ -89,16 +65,4 @@ export default defineComponent({
 <style lang="sass">
 .avatar-custom>.q-avatar__content>img
   border: 2px solid #ddd
-
-.avatar-initials
-  width: 100%
-  height: 100%
-  display: flex
-  align-items: center
-  justify-content: center
-  font-weight: 700
-  color: #ffffff
-  background: #2a9df4
-  border-radius: 50%
-  font-size: 1rem
 </style>

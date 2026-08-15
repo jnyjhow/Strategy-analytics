@@ -1,0 +1,13 @@
+import { clientApi } from "./clientApi";
+const unwrap = (response) => response.data?.data ?? response.data;
+const form = (file) => { const data = new FormData(); data.append("file", file); return data; };
+export const uploadAvatar = async (file) => unwrap(await clientApi.post("/api/v1/client/profile/avatar", form(file)));
+export const removeAvatar = async () => clientApi.delete("/api/v1/client/profile/avatar");
+export const getAvatarUrl = async (expiresInMinutes = 15) => unwrap(await clientApi.get("/api/v1/client/profile/avatar/url", { params: { expiresInMinutes } }));
+export const uploadSignature = async (file) => unwrap(await clientApi.post("/api/v1/client/profile/signature", form(file)));
+export const removeSignature = async () => clientApi.delete("/api/v1/client/profile/signature");
+export const getSignatureUrl = async (expiresInMinutes = 15) => unwrap(await clientApi.get("/api/v1/client/profile/signature/url", { params: { expiresInMinutes } }));
+export const createShareLink = async (payload) => unwrap(await clientApi.post("/api/v1/client/profile/share-links", payload));
+export const listShareLinks = async () => unwrap(await clientApi.get("/api/v1/client/profile/share-links"));
+export const revokeShareLink = async (linkId) => clientApi.delete(`/api/v1/client/profile/share-links/${linkId}`);
+export const getPublicProfile = async (token) => unwrap(await clientApi.get(`/api/v1/public/profiles/${encodeURIComponent(token)}`, { skipAuthRefresh: true }));

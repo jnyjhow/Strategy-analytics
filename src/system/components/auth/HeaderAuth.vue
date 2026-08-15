@@ -16,7 +16,7 @@ export default defineComponent({
   },
   props: {
     text: { type: String },
-    styleNew: { type: [String, Object], default: "height: 40vh" },
+    styleNew: { type: String, default: "height: 40vh" },
   },
   setup() {
     return {};

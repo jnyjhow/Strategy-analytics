@@ -1,138 +1,16 @@
 <template>
-  <div class="ForgotpasswordLayout text-white">
-    <q-form
-      @submit.prevent.stop="onSubmit"
-      class="row justify-center items-center content-center"
-      v-if="statusAction == 'initial'"
-    >
-      <div class="col-md-3 col-10 self-center">
-        <div class="col-12 q-my-lg">
-          <span class="text-muted-register">
-            Informe os dados da sua conta para redefir a senha.
-          </span>
-        </div>
-        <div class="column">
-          <label-field labelInput="CPF ou CNPJ">
-            <q-input
-              v-model="user.person"
-              mask="###.###.###-##"
-              :rules="personRule"
-              ref="personRef"
-              v-bind="{ ...$inputStyle }"
-            />
-          </label-field>
-          <div class="row q-gutter-lg q-mt-lg">
-            <q-btn
-              text-color="white"
-              label="Voltar"
-              :disabled="loading"
-              class="text-weight-bolder col q-pa-md q-mt-lg"
-              no-caps
-              outline
-              style="
-                border-radius: 8px;
-                border: 1px solid #00a3ff;
-                background: rgba(0, 0, 0, 0.2) !important;
-              "
-              @click="backLogin"
-            />
-            <q-btn
-              color="primary"
-              text-color="white"
-              label="Enviar"
-              type="submit"
-              :disabled="loading"
-              class="text-weight-bolder col q-pa-md q-mt-lg"
-              no-caps
-              style="border-radius: 8px"
-            />
-          </div>
-        </div>
-      </div>
-    </q-form>
-    <div
-      class="row text-center justify-center items-center content-center"
-      v-if="statusAction == 'finally'"
-      style="height: 70vh"
-    >
-      <div class="col-12">
-        <p class="text-h4 text-weight-bolder">
-          Tudo certo, enviamos o e-mail, com o link para troca sua senha!
-        </p>
-        <q-icon color="white-14" name="fa-solid fa-wind" size="1.2rem"></q-icon>
-        <q-icon
-          color="white-14"
-          name="fa-solid fa-truck-fast"
-          size="1.2rem"
-          class="q-mx-sm"
-        ></q-icon>
-        <q-icon
-          color="white-14"
-          name="fa-solid fa-envelope"
-          size="1.2rem"
-        ></q-icon>
-      </div>
-      <div class="col-12">
-        <p class="text-h5 text-weight-bolder">
-          Não deve leva mais que 2 minutos, para chegar até sua caixa de e-mail.
-        </p>
-        <p class="text-weight-light text-caption text-secondary">
-          Lembra-se de verificar a caixa de SPAM.
-          <q-icon color="yellow-14" name="fa-solid fa-face-smile-wink"></q-icon>
-        </p>
-      </div>
-    </div>
-  </div>
+  <div class="text-white"><q-form class="row justify-center" @submit.prevent="step === 'request' ? requestCode() : resetPassword()"><div class="col-md-3 col-10"><p class="text-muted-register">{{ step === 'request' ? 'Informe seu e-mail para receber o código de recuperação.' : 'Informe o código recebido e escolha uma nova senha.' }}</p><label-field labelInput="E-mail"><q-input v-model.trim="form.email" type="email" v-bind="{ ...$inputStyle }" :rules="emailRules" /></label-field><template v-if="step === 'complete'"><label-field labelInput="Código"><q-input v-model.trim="form.code" v-bind="{ ...$inputStyle }" :rules="requiredRules" autocomplete="one-time-code" /></label-field><label-field labelInput="Nova senha"><q-input v-model="form.password" type="password" v-bind="{ ...$inputStyle }" :rules="passwordRules" autocomplete="new-password" /></label-field><label-field labelInput="Confirmar nova senha"><q-input v-model="form.confirm" type="password" v-bind="{ ...$inputStyle }" :rules="confirmRules" autocomplete="new-password" /></label-field></template><div class="row q-gutter-md q-mt-lg"><q-btn outline class="col q-pa-md" label="Voltar" no-caps @click="back" /><q-btn type="submit" color="primary" class="col q-pa-md" :label="step === 'request' ? 'Enviar código' : 'Redefinir senha'" no-caps :loading="loading" /></div><q-btn v-if="step === 'complete'" flat color="primary" class="full-width q-mt-sm" label="Reenviar código" no-caps :disable="cooldown > 0" @click="requestCode">{{ cooldown ? ` (${cooldown}s)` : '' }}</q-btn></div></q-form></div>
 </template>
-
-<script>
-import { defineComponent, ref } from "vue";
-import useToken from "src/composables/system/Requests/useToken";
-import useRoles from "src/composables/system/useRoles";
-// import RegisterData from "src/system/components/RegisterData.vue";
+<script setup>
+import { onBeforeUnmount, reactive, ref } from "vue";
 import LabelField from "src/system/components/form/LabelField.vue";
-
-export default defineComponent({
-  name: "ForgotpasswordLayout",
-  components: {
-    // RegisterData,
-    LabelField,
-  },
-  emits: ["status-login", "status-email"],
-  setup(props, ctx) {
-    const { personRef, personRule } = useRoles();
-    const { forgotPassword, loading, forgot } = useToken();
-    const statusAction = ref("initial");
-    const user = ref({
-      person: "",
-    });
-    const onSubmit = async () => {
-      try {
-        await forgotPassword(user.value);
-        if (forgot.value) statusAction.value = "finally";
-        ctx.emit("status-email",true);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    const backLogin = () => {
-      ctx.emit("status-login", "login");
-    };
-    return {
-      onSubmit,
-      forgotPassword,
-      loading,
-      user,
-      personRule,
-      personRef,
-      statusAction,
-      backLogin,
-    };
-  },
-  // Outras configurações do componente aqui
-});
+import useNotify from "src/composables/useNotify";
+import { getApiErrorMessage } from "src/services/clientAuthService";
+import { completePasswordReset, requestPasswordReset } from "src/services/clientAccountService";
+const emit = defineEmits(["status-login"]), { successNotify, errorNotify } = useNotify(), step = ref("request"), loading = ref(false), cooldown = ref(0), form = reactive({ email: "", code: "", password: "", confirm: "" });
+const requiredRules = [(v) => Boolean(String(v || "").trim()) || "Campo obrigatório"], emailRules = [...requiredRules, (v) => /^\S+@\S+\.\S+$/.test(v) || "E-mail inválido"], passwordRules = [...requiredRules, (v) => String(v).length >= 8 || "Use pelo menos 8 caracteres"], confirmRules = [...passwordRules, (v) => v === form.password || "As senhas não conferem"];
+let timer; const startCooldown = () => { cooldown.value = 60; clearInterval(timer); timer = setInterval(() => { cooldown.value -= 1; if (cooldown.value <= 0) clearInterval(timer); }, 1000); };
+const requestCode = async () => { loading.value = true; try { await requestPasswordReset(form.email); step.value = "complete"; startCooldown(); successNotify("Se a conta existir, o código será enviado."); } catch (e) { errorNotify(getApiErrorMessage(e, "Não foi possível solicitar a recuperação.")); } finally { loading.value = false; } };
+const resetPassword = async () => { loading.value = true; try { await completePasswordReset({ email: form.email, code: form.code, newPassword: form.password, confirmNewPassword: form.confirm }); successNotify("Senha redefinida. Entre com a nova senha."); emit("status-login", "login"); } catch (e) { errorNotify(getApiErrorMessage(e, "Código inválido ou expirado.")); } finally { loading.value = false; } };
+const back = () => step.value === "complete" ? step.value = "request" : emit("status-login", "login"); onBeforeUnmount(() => clearInterval(timer));
 </script>
-
-<style scoped>
-/* Estilos específicos do componente aqui */
-</style>

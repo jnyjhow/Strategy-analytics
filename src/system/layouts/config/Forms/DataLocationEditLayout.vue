@@ -45,7 +45,7 @@
     </label-form>
     <label-form className="col-12 col-sm" textLabel="Complemento">
       <q-input
-        v-model="data.account.address_complement"
+        v-model="data.account.address_state"
         class="q-mb-md"
         outlined
         dense

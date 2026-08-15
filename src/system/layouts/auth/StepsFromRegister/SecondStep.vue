@@ -23,6 +23,7 @@
               mask="#####-###"
               :loading="loading"
               :disable="loading"
+              @blur="searchCep"
               v-bind="{ ...$inputStyle }"
               :rules="zipCodeRule"
             />
@@ -149,7 +150,7 @@ export default defineComponent({
   emits: ["step-current"],
   components: { WelcomeMsg, LabelField },
   setup(props, ctx) {
-    const { loading, registration, registrationStatus } = useRegister();
+    const { viaCEP, loading, registration, registrationStatus } = useRegister();
     const userStore = useUserStore();
     const { register } = storeToRefs(userStore);
     const { infoNotify, successNotify } = useNotify();
@@ -164,7 +165,22 @@ export default defineComponent({
       validateDataAddresMsg,
     } = useRefForm();
     const { zipCodeRule, stringSerialize, requiredRole } = useRoles();
-    // Removida a função de busca automática de CEP. Usuário deverá preencher endereço manualmente.
+    const searchCep = async () => {
+      zipcodeRef.value.validate();
+      let cepSerialize = "";
+      if (register.value.address_zip_code) {
+        cepSerialize = stringSerialize(register.value.address_zip_code);
+      }
+      if (!zipcodeRef.value.hasError) {
+        const res = await viaCEP(cepSerialize);
+        register.value.address_street = res.logradouro;
+        register.value.address_state = res.uf;
+        register.value.address_city = res.localidade;
+        register.value.address_district = res.bairro;
+        // console.log(res);
+      }
+      // await viaCEP(register.value.address_zip_code)
+    };
 
     const dialogWelcome = ref(false);
     const router = useRouter();
@@ -189,6 +205,7 @@ export default defineComponent({
     };
     return {
       register,
+      searchCep,
       loading,
       zipcodeRef,
       streetRef,

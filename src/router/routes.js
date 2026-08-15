@@ -73,6 +73,11 @@ const routes = [
     component: () => import("../system/pages/RegisterPage.vue"),
   },
   {
+    path: "/public/profile/:token",
+    name: "public-profile",
+    component: () => import("../system/pages/PublicProfilePage.vue"),
+  },
+  {
     path: "/system/",
     component: () => import("../system/layouts/MainLayout.vue"),
     props: true,

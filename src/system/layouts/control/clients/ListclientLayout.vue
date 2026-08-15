@@ -16,7 +16,7 @@
         <template v-slot:body-cell-avatar="props">
           <q-td :props="props">
             <q-avatar size="sm">
-              <img :src="getAvatarUrl(props.row.avatar)" />
+              <img :src="props.row.avatar" />
             </q-avatar>
           </q-td>
         </template>
@@ -59,7 +59,6 @@ import RoleuserLayout from "../users/RoleuserLayout.vue";
 import IncomeLayout from "./IncomeLayout.vue";
 import ExtractLayout from "./ExtractLayout.vue";
 import useClientHelpers from "src/composables/system/Helpers/useClientHelpers";
-import getAvatarUrl from "src/utils/getAvatarUrl";
 
 export default defineComponent({
   name: "ListclientLayout",
@@ -95,7 +94,6 @@ export default defineComponent({
       btnActions,
       viewExtract,
       handlerAction,
-      getAvatarUrl,
     };
   },
   // Outras configurações do componente aqui

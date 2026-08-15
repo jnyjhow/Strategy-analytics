@@ -25,22 +25,16 @@
     <label-form className="col-12 col-sm-4" textLabel="Nacionalidade">
       <q-input v-model="data.nacionalidade" class="q-mb-md" outlined dense />
     </label-form>
-    <label-form className="col-12 col-sm-6" textLabel="Naturalidade - Cidade">
+    <label-form
+      className="col-12 col-sm-4"
+      textLabel="Naturalidade (Cidade, UF)"
+    >
       <q-input
-        v-model="naturalidadeCity"
+        v-model="data.naturalidade"
         class="q-mb-md"
         outlined
         dense
-        placeholder="ex.: São José dos Campos"
-      />
-    </label-form>
-    <label-form className="col-12 col-sm-2" textLabel="UF">
-      <q-input
-        v-model="naturalidadeUf"
-        class="q-mb-md"
-        outlined
-        dense
-        placeholder="SP"
+        placeholder="ex.: São José dos Campos, SP"
       />
     </label-form>
     <label-form className="col-12 col-sm" textLabel="Data de Nascimento">
@@ -84,7 +78,7 @@
 </template>
 
 <script setup>
-import { defineComponent, computed } from "vue";
+import { defineComponent } from "vue";
 import LabelForm from "src/system/components/form/LabelForm.vue";
 import { useUserStore } from "src/stores/user";
 import { storeToRefs } from "pinia";
@@ -109,58 +103,7 @@ const optionsCivil = [
 const storeUser = useUserStore();
 const { data } = storeToRefs(storeUser);
 
-// Compatibilidade: naturalidade pode vir dentro de data.cliente.naturalidade
-function readNaturalidade() {
-  try {
-    return (
-      storeUser.data?.cliente?.naturalidade ||
-      storeUser.data?.naturalidade ||
-      ""
-    );
-  } catch (e) {
-    return "";
-  }
-}
-function writeNaturalidade(city, uf) {
-  try {
-    if (!storeUser.data) storeUser.data = {};
-    if (!storeUser.data.cliente) storeUser.data.cliente = {};
-    const parts = [];
-    if (city && String(city).trim() !== "") parts.push(String(city).trim());
-    if (uf && String(uf).trim() !== "") parts.push(String(uf).trim());
-    storeUser.data.cliente.naturalidade = parts.join(", ");
-  } catch (e) {
-    /* noop */
-  }
-}
-
-const naturalidadeCity = computed({
-  get() {
-    const parts = String(readNaturalidade() || "")
-      .split(",")
-      .map((s) => s.trim());
-    return parts[0] || "";
-  },
-  set(v) {
-    const uf = naturalidadeUf.value || "";
-    writeNaturalidade(v, uf);
-  },
-});
-
-const naturalidadeUf = computed({
-  get() {
-    const parts = String(readNaturalidade() || "")
-      .split(",")
-      .map((s) => s.trim());
-    return parts[1] || "";
-  },
-  set(v) {
-    const city = naturalidadeCity.value || "";
-    writeNaturalidade(city, v);
-  },
-});
-
-// Normalização removida: `setUserData()` é a fonte da verdade para estrutura dos dados do usuário.
+// Seu código aqui
 </script>
 
 <style scoped>

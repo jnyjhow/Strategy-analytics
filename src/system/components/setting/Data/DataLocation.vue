@@ -12,32 +12,39 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { defineComponent } from "vue";
 import { useUserStore } from "src/stores/user";
 import { storeToRefs } from "pinia";
+import { date } from "quasar";
 
 const store = useUserStore();
-const { data } = storeToRefs(store);
-
+const { data, isDirty, isDirtyData } = storeToRefs(store);
+let dateCurrent = new Date(data.value.account.birthday + " 00:00:00");
+let brDate = date.formatDate(dateCurrent, "DD/MM/YYYY");
+defineComponent({
+  name: "DataLocation",
+});
 defineProps({
   classDiv: { type: String, default: "col-3 text-align q-mt-md" },
 });
-
-const dataLocation = computed(() => {
-  const dv = data.value || {};
-  const account = dv.account || dv.cliente?.account || {};
-  return [
-    { title: "CEP", value: account.address_zip_code || dv.cep },
-    {
-      title: "Estado",
-      value: account.address_uf || dv.estado,
-    },
-    { title: "Cidade", value: account.address_city || dv.cidade },
-    { title: "Logradouro", value: account.address_street || dv.rua },
-    { title: "Bairro", value: account.address_district || dv.bairro },
-    { title: "Complemento", value: account.address_complement || dv.cep },
-  ];
-});
+const dataLocation = [
+  { title: "CEP", value: data.value.account.address_zip_code },
+  { title: "Estato", value: data.value.account.address_state ?? "SP" },
+  { title: "Cidade", value: data.value.account.address_city ?? "São Paulo" },
+  { title: "Cidade", value: data.value.account.address_city ?? "São Paulo" },
+  {
+    title: "Logradouro",
+    value: data.value.account.address_street ?? "Avenida Brasil. 219",
+  },
+  {
+    title: "Bairro",
+    value: data.value.account.address_district ?? "Jardim Paraiso",
+  },
+  {
+    title: "Complemento",
+    value: data.value.account.address_complement ?? "Bloco A- Sala 04",
+  },
+];
 </script>
 
 <style scoped>

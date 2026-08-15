@@ -14,9 +14,8 @@ export default boot(({ app }) => {
 
   app.config.globalProperties.$axios = axios;
   api.defaults.headers.common["Accept"] = "application/json";
-  // Removido withCredentials e withXSRFToken para evitar problemas de CORS
-  // api.defaults.withCredentials = true;
-  // api.defaults.withXSRFToken = true;
+  api.defaults.withCredentials = true;
+  api.defaults.withXSRFToken = true;
   app.config.globalProperties.$api = api;
 });
 

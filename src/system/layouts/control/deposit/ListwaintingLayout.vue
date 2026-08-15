@@ -13,7 +13,7 @@
       <template v-slot:body-cell-avatar="props">
         <q-td :props="props">
           <q-avatar size="sm">
-            <img :src="getAvatarUrl(props.row.avatar)" />
+            <img :src="props.row.avatar" />
           </q-avatar>
         </q-td>
       </template>
@@ -47,7 +47,6 @@ import { storeToRefs } from "pinia";
 import { useDepositStore } from "src/stores/deposit";
 import useDeposit from "src/composables/system/Requests/useDeposit";
 import useDepositHelpers from "src/composables/system/Helpers/useDepositHelpers";
-import getAvatarUrl from "src/utils/getAvatarUrl";
 import StatuschangeLayout from "./StatuschangeLayout.vue";
 
 export default defineComponent({
@@ -76,7 +75,6 @@ export default defineComponent({
       handlerAction,
       depositEdit,
       viewDeposit,
-      getAvatarUrl,
     };
   },
 });

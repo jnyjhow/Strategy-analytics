@@ -29,7 +29,7 @@
       <div class="col-2 col-sm col-md-2">
         <author-description
           :name="comunicationData.author.nome"
-          :photo="getAvatarUrl(comunicationData.author.avatar)"
+          :photo="comunicationData.author.avatar"
           :duties="comunicationData.author.cargo"
           :total_of_publication="comunicationData.author.publicacoes"
           :position="comunicationData.author.atribuicao"
@@ -69,7 +69,6 @@ import { defineComponent } from "vue";
 import TitlePage from "src/system/components/TitlePage.vue";
 import AuthorDescription from "src/system/components/Communication/AuthorDescription.vue";
 import LateralDescription from "src/system/components/Communication/LateralDescription.vue";
-import getAvatarUrl from "src/utils/getAvatarUrl";
 defineComponent({
   name: "CommunicationSALayout",
 });

@@ -21,17 +21,17 @@
           </div>
         </div>
         <div class="column q-mt-lg">
-          <span class="text-label q-mt-lg">CPF ou CNPJ</span>
+          <span class="text-label q-mt-lg">E-mail</span>
           <q-input
             v-bind="{ ...$inputStyle }"
             v-model="login.person"
-            mask="###.###.###-##"
-            placeholder="000.000.000-00 | 000.000.000/0001-00"
-            :rules="personRule"
+            type="email"
+            placeholder="seu@email.com"
+            :rules="emailRule"
             ref="personRef"
           />
 
-          <span class="text-label q-mt-lg">Confirmar Senha</span>
+          <span class="text-label q-mt-lg">Senha</span>
           <q-input
             v-model="login.password"
             v-bind="{ ...$inputStyle }"
@@ -89,7 +89,7 @@ import { useUserStore } from "../../../stores/user";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 // import useLogin from "../../composables/useLogin";
-import useClientAuth from "../../../composables/system/useClientAuth";
+import useAuth from "../../../composables/system/useAuth";
 import useRoles from "../../../composables/system/useRoles";
 // import HeaderAuth from "src/system/components/auth/HeaderAuth.vue";
 import RegisterData from "src/system/components/RegisterData.vue";
@@ -104,22 +104,17 @@ export default defineComponent({
     const useStore = useUserStore();
     const personRef = ref(null);
     const passwordRef = ref(null);
-    // const { auth, errors, loading } = useAuth();
-    const { authenticateClient, loading } = useClientAuth();
-    const { personRule } = useRoles();
+    const { auth, errors, loading } = useAuth();
+    const { emailRule } = useRoles();
     // const isValidperson = computed(() => errors.person.length > 0);
     const { login } = storeToRefs(useStore);
     const route = useRoute();
     const router = useRouter();
-    const onSubmit = async () => {
+    const onSubmit = () => {
       personRef.value.validate();
       passwordRef.value.validate();
       if (!personRef.value.hasError && !passwordRef.value.hasError) {
-        const credentials = {
-          cpf: login.value.person,
-          password: login.value.password,
-        };
-        await authenticateClient(credentials);
+        auth(login.value);
       }
     };
     const goRegister = () => {
@@ -136,8 +131,9 @@ export default defineComponent({
       loading,
       login,
       isPwd,
-      personRule,
+      emailRule,
       onSubmit,
+      auth,
       forgot,
       goRegister,
     };
